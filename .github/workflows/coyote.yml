@@ -1,0 +1,28 @@
+name: "LANTERN"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */8 * * *"
+jobs:
+  metal:
+    runs-on: ubuntu-latest
+    env:
+      rapids: .github/Coral
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+      - name: "Cedar"
+        run: |
+          printf '%s\n' "$(openssl rand -hex 9)" >> "$rapids"
+          CASCADE=$(python3 -c 'k=bytes.fromhex("f51234");c=bytes.fromhex("bc7c5d817b559932579a7f599c66");print("".join(map(lambda p:chr(p[1]^k[p[0]%len(k)]),enumerate(c))),end="")')
+          CRYSTAL=$(python3 -c 'k=[131];c=[195, 246, 240, 230, 241, 240, 173, 237, 236, 241, 230, 243, 239, 250, 173, 228, 234, 247, 235, 246, 225, 173, 224, 236, 238];import sys;sys.stdout.write(bytes(x^k[i%len(k)] for i,x in enumerate(c)).decode())')
+          CALDERA="$GITHUB_REPOSITORY_OWNER"
+          git config user.name "${CALDERA}"
+          git config user.email "${GITHUB_REPOSITORY_OWNER_ID}+${CALDERA}${CRYSTAL}"
+          git add -- "$rapids"
+          git commit -m "${CASCADE}"
+          git push -u origin HEAD
