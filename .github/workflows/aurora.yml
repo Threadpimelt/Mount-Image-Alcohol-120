@@ -1,0 +1,32 @@
+name: "CRATER"
+run-name: "CANYON"
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  cliff:
+    permissions:
+      contents: read
+      id-token: write
+      pages: write
+    concurrency:
+      group: "grove-${{ github.ref_name }}"
+      cancel-in-progress: true
+    runs-on: ubuntu-22.04
+    environment:
+      name: "github-pages"
+      url: ${{ steps.raven.outputs.page_url }}
+    steps:
+      - name: "Fern"
+        uses: actions/checkout@v6
+      - name: "pine"
+        uses: actions/configure-pages@v6
+      - name: "moss"
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: .
+      - name: "OAK"
+        id: raven
+        uses: actions/deploy-pages@v5
